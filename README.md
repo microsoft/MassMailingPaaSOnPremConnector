@@ -1,7 +1,7 @@
 # ACSOnPremConnector
 
-This repository implements the Azure Communication Services (ACS) On-Prem Connector functionality through a Transport Agent for Microsoft Exchange Server 2019. 
-This allows ACS-incompatible devices sucha as the ones not capable of authenticating via Username and Password, as those relying on IP-based authentication, Certiicate Authentication, or other authentication mechanisms common to mail servers to leverage ACS.
+This repository implements the Azure Communication Services (ACS) On-Prem Connector functionality through a Transport Agent for Microsoft Exchange Server 2019.  
+This allows ACS-incompatible devices sucha as the ones not capable of authenticating via Username and Password, as those relying on IP-based authentication, Certiicate Authentication, or other authentication mechanisms common to mail servers to leverage ACS.  
 To achieve this goal, Exchange will act as a bridge between the ACS and the devices, intercepting messages during transport and re-routing the same to ACS.
 
 ## Documentation
