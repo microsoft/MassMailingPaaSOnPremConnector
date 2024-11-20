@@ -25,7 +25,9 @@ namespace ACSOnPremConnector
 
     public class ACSOnPremConnector_RerouteExternalBasedOnGAL : RoutingAgent
     {
-        EventLogger EventLog = new EventLogger("RerouteExternalBasedOnGAL");
+        static string EventLogName = "RerouteExternalBasedOnGAL";
+        EventLogger EventLog = new EventLogger(EventLogName);
+
         static readonly string ACSOnPremConnectorTargetName = "X-ACSOnPremConnector-Target";
         static string ACSOnPremConnectorTargetValue = String.Empty;
 

@@ -24,7 +24,9 @@ namespace ACSOnPremConnector
 }
     public class ACSOnPremConnector_RerouteAllMessages : RoutingAgent
     {
-        EventLogger EventLog = new EventLogger("RerouteAllMessages");
+        static string EventLogName = "RerouteAllMessages";
+        EventLogger EventLog = new EventLogger(EventLogName);
+
         static readonly string ACSOnPremConnectorTargetName = "X-ACSOnPremConnector-Target";
         static string ACSOnPremConnectorTargetValue = String.Empty;
 

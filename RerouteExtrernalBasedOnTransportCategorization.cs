@@ -25,7 +25,9 @@ namespace ACSOnPremConnector
 
     public class ACSOnPremConnector_RerouteExtrernalBasedOnTransportCategorization : RoutingAgent
     {
-        EventLogger EventLog = new EventLogger("RerouteExtrernalBasedOnTransportCategorization");
+        static string EventLogName = "RerouteExtrernalBasedOnTransportCategorization";
+        EventLogger EventLog = new EventLogger(EventLogName);
+
         static readonly string ACSOnPremConnectorTargetName = "X-ACSOnPremConnector-Target";
         static string ACSOnPremConnectorTargetValue = String.Empty;
 

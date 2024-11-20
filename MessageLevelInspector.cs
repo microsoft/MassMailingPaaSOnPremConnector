@@ -10,6 +10,16 @@ using System.Threading.Tasks;
 
 namespace ACSOnPremConnector
 {
+    /*
+     * This class provides debug functionality to log the properties of the message during processing.
+     * This will print on the event log the key properites (P1, P2, Headers) on the Event Log.
+     * As all the agents in this module executes either at OnResolvedMessage (2nd step in categorization) or OnRoutedMessage (3rd step in categorization), 
+     * this agent will print the properties of the message when it's received OnSubmittedMessage (1st step in categorization) and post processing OnCategorizedMessage (4th step in categorization).
+     * By doing so the event log will contain a snapshot of the message before processing, one event during processing with the changes performed, and one last event after processing.
+     * This shall allow to investigate unexpected behaviour at message level, without needing to rely on Pipeline Tracing or SMTP Protocol Logs.
+     * For this agent, opposite to all others, DebugEnabled is assumed "true" unless disabled via registry key. It can be disabled bia Disable-TransportAgent if necessary.
+     * This agent is not intended to be left on at all time, but rather to be enabled for troubleshooting and then disabled.
+     */
     public class MessageLevelInspector: RoutingAgentFactory
     {
         public override RoutingAgent CreateAgent(SmtpServer server)
@@ -19,11 +29,12 @@ namespace ACSOnPremConnector
     }
     public class ACSOnPremConnector_MessageLevelInspector : RoutingAgent
     {
-        EventLogger EventLog = new EventLogger("MessageLevelInspector");
+        static string EventLogName = "MessageLevelInspector";
+        EventLogger EventLog = new EventLogger(EventLogName);
 
         static readonly string RegistryHive = @"Software\TransportAgents\ACSOnPremConnector\MessageLevelInspector";
         static readonly string RegistryKeyDebugEnabled = "DebugEnabled";
-        static bool DebugEnabled = false;
+        static bool DebugEnabled = true;
 
         public ACSOnPremConnector_MessageLevelInspector()
         {

@@ -25,7 +25,9 @@ namespace ACSOnPremConnector
 
     public class ACSOnPremConnector_RerouteExternalBasedOnAcceptedDomains : RoutingAgent
     {
-        EventLogger EventLog = new EventLogger("RerouteExternalBasedOnAcceptedDomains");
+        static string EventLogName = "RerouteExternalBasedOnAcceptedDomains";
+        EventLogger EventLog = new EventLogger(EventLogName);
+
         static readonly string ACSOnPremConnectorTargetName = "X-ACSOnPremConnector-Target";
         static string ACSOnPremConnectorTargetValue = String.Empty;
 

@@ -26,7 +26,9 @@ namespace ACSOnPremConnector
 
     public class ACSOnPremConnector_ProcessSenderMismatch : RoutingAgent
     {
-        EventLogger EventLog = new EventLogger("ProcessSenderMismatch");
+        static string EventLogName = "ProcessSenderMismatch";
+        EventLogger EventLog = new EventLogger(EventLogName);
+
         static readonly string ACSOnPremConnectorP1P2MismatchActionName = "X-ACSOnPremConnector-P1P2MismatchAction";
         static string ACSOnPremConnectorP1P2MismatchActionValue = String.Empty;
         static readonly string ACSOnPremConnectorForceP1Name = "X-ACSOnPremConnector-ForceP1";
