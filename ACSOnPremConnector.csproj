@@ -50,8 +50,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EventLogger.cs" />
+    <Compile Include="ProcessSenderMismatch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RerouteAll.cs" />
+    <Compile Include="RerouteAllMessages.cs" />
+    <Compile Include="RerouteExternalBasedOnAcceptedDomains.cs" />
+    <Compile Include="RerouteExternalBasedOnGAL.cs" />
+    <Compile Include="RerouteExtrernalBasedOnTransportCategorization.cs" />
     <Compile Include="TextLogger.cs" />
   </ItemGroup>
   <ItemGroup>

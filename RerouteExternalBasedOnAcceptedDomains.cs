@@ -5,44 +5,48 @@ using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace ACSOnPremConnector
 {
-    public class RerouteAll : RoutingAgentFactory
+    /*
+     * This class reroutes messages to external recipients when the header X-ACSOnPremConnector-Target set to a domain.
+     * The domain value doesn't need to be routable, but has to be avalid domain (i.e. something.value.tld).
+     * This agent will reroute all the messages via the custom routing domain, only if the target domain is not an accepted domain (i.e. hotmail.com).
+     * As the X-ACSOnPremConnector-Target will likely be set via Transport Rule, exclusions can still be managed via the transport rules themselves if necessary.
+     * In case multiple agents are active at the same time, only the first one will trigger as the other will detect the presence of the X-ACSOnPremConnector-Target header which is used for loop protection. This is by design to protect mail loops.
+     */
+    public class RerouteExternalBasedOnAcceptedDomains : RoutingAgentFactory
     {
         public override RoutingAgent CreateAgent(SmtpServer server)
         {
-            return new ACSOnPremConnector_RerouteAll(server.AcceptedDomains, server.AddressBook);
+            return new ACSOnPremConnector_RerouteExternalBasedOnAcceptedDomains(server.AcceptedDomains);
         }
-}
+    }
 
-    public class ACSOnPremConnector_RerouteAll : RoutingAgent
+    public class ACSOnPremConnector_RerouteExternalBasedOnAcceptedDomains : RoutingAgent
     {
-        EventLogger EventLog = new EventLogger("ACSOnPremConnector");
+        EventLogger EventLog = new EventLogger("RerouteExternalBasedOnAcceptedDomains");
         static readonly string ACSOnPremConnectorTargetName = "X-ACSOnPremConnector-Target";
         static string ACSOnPremConnectorTargetValue = String.Empty;
 
-        static readonly string RegistryHive = @"Software\TransportAgents\ACSOnPremConnector\RerouteAll";
+        static readonly string RegistryHive = @"Software\TransportAgents\ACSOnPremConnector\RerouteExternalBasedOnAcceptedDomains";
         static readonly string RegistryKeyDebugEnabled = "DebugEnabled";
         static bool DebugEnabled = false;
 
-        static readonly string ACSOnPremConnectorName = "X-TransportAgent-Name";
-        static readonly string ACSOnPremConnectorNameValue = "ACSOnPremConnector-RerouteAll";
+        static readonly string ACSOnPremConnectorName = "X-ACSOnPremConnector-Name";
+        static readonly string ACSOnPremConnectorNameValue = "ACSOnPremConnector-RerouteExternalBasedOnAcceptedDomains";
         static readonly Dictionary<string, string> ACSOnPremConnectorHeaders = new Dictionary<string, string>
         {
             {ACSOnPremConnectorName, ACSOnPremConnectorNameValue},
-            {"X-TransportAgent-Creator", "Tommaso Toniolo"},
-            {"X-TransportAgent-Contact", "https://aka.ms/totoni"}
+            {"X-ACSOnPremConnector-Creator", "Tommaso Toniolo"},
+            {"X-ACSOnPremConnector-Contact", "https://aka.ms/totoni"}
         };
 
         static AcceptedDomainCollection acceptedDomains;
-        static AddressBook addressBook;
 
-        public ACSOnPremConnector_RerouteAll(AcceptedDomainCollection serverAcceptedDomains, AddressBook serverAddressBook)
+        public ACSOnPremConnector_RerouteExternalBasedOnAcceptedDomains(AcceptedDomainCollection serverAcceptedDomains)
         {
-            base.OnResolvedMessage += new ResolvedMessageEventHandler(OverrideRoutingDomain);
+            base.OnResolvedMessage += new ResolvedMessageEventHandler(RerouteExternalBasedOnAcceptedDomains);
 
             RegistryKey registryPath = Registry.CurrentUser.OpenSubKey(RegistryHive, RegistryKeyPermissionCheck.ReadWriteSubTree, System.Security.AccessControl.RegistryRights.FullControl);
             if (registryPath != null)
@@ -55,11 +59,10 @@ namespace ACSOnPremConnector
             }
 
             acceptedDomains = serverAcceptedDomains;
-            addressBook = serverAddressBook;
 
         }
 
-        void OverrideRoutingDomain(ResolvedMessageEventSource source, QueuedMessageEventArgs evtMessage)
+        void RerouteExternalBasedOnAcceptedDomains(ResolvedMessageEventSource source, QueuedMessageEventArgs evtMessage)
         {
             try
             {
@@ -70,7 +73,7 @@ namespace ACSOnPremConnector
                 HeaderList headers = evtMessage.MailItem.Message.MimeDocument.RootPart.Headers;
                 Stopwatch stopwatch = Stopwatch.StartNew();
 
-                EventLog.AppendLogEntry(String.Format("Processing message {0} from {1} with subject {2} in ACSOnPremConnector:RerouteAll", messageId, sender, subject));
+                EventLog.AppendLogEntry(String.Format("Processing message {0} from {1} with subject {2} in ACSOnPremConnector:RerouteExternalBasedOnAcceptedDomains", messageId, sender, subject));
 
                 Header ACSOnPremConnectorTarget = headers.FindFirst(ACSOnPremConnectorTargetName);
                 Header LoopPreventionHeader = headers.FindFirst(ACSOnPremConnectorName);
@@ -86,10 +89,20 @@ namespace ACSOnPremConnector
 
                         foreach (EnvelopeRecipient recipient in evtMessage.MailItem.Recipients)
                         {
-                            RoutingDomain customRoutingDomain = new RoutingDomain(ACSOnPremConnectorTargetValue);
-                            RoutingOverride destinationOverride = new RoutingOverride(customRoutingDomain, DeliveryQueueDomain.UseOverrideDomain);
-                            source.SetRoutingOverride(recipient, destinationOverride);
-                            EventLog.AppendLogEntry(String.Format("Recipient {0} overridden to {1}", recipient.Address.ToString(), ACSOnPremConnectorTargetValue));
+                            AcceptedDomain resolvedDomain = acceptedDomains.Find(recipient.Address.DomainPart.ToString());
+                            EventLog.AppendLogEntry(String.Format("The check of whether the recipient domain {0} is an Accepted Domain has returned {1}", recipient.Address.DomainPart.ToString(), resolvedDomain == null ? "NULL" : resolvedDomain.IsInCorporation.ToString()));
+
+                            if (resolvedDomain != null)
+                            {
+                                EventLog.AppendLogEntry(String.Format("Recipient {0} not overridden as the recipient domain IS AN ACCEPTED DOMAIN", recipient.Address.ToString()));
+                            }
+                            else
+                            {
+                                RoutingDomain customRoutingDomain = new RoutingDomain(ACSOnPremConnectorTargetValue);
+                                RoutingOverride destinationOverride = new RoutingOverride(customRoutingDomain, DeliveryQueueDomain.UseOverrideDomain);
+                                source.SetRoutingOverride(recipient, destinationOverride);
+                                EventLog.AppendLogEntry(String.Format("Recipient {0} overridden to {1}", recipient.Address.ToString(), ACSOnPremConnectorTargetValue));
+                            }
                         }
                     }
                     else
@@ -101,8 +114,12 @@ namespace ACSOnPremConnector
 
                     foreach (var newHeader in ACSOnPremConnectorHeaders)
                     {
-                        evtMessage.MailItem.Message.MimeDocument.RootPart.Headers.InsertAfter(new TextHeader(newHeader.Key, newHeader.Value), evtMessage.MailItem.Message.MimeDocument.RootPart.Headers.LastChild);
-                        EventLog.AppendLogEntry(String.Format("ADDED header {0}: {1}", newHeader.Key, String.IsNullOrEmpty(newHeader.Value) ? String.Empty : newHeader.Value));
+                        Header HeaderExists = headers.FindFirst(newHeader.Key);
+                        if (HeaderExists == null || HeaderExists.Value != newHeader.Value)
+                        {
+                            evtMessage.MailItem.Message.MimeDocument.RootPart.Headers.InsertAfter(new TextHeader(newHeader.Key, newHeader.Value), evtMessage.MailItem.Message.MimeDocument.RootPart.Headers.LastChild);
+                            EventLog.AppendLogEntry(String.Format("ADDED header {0}: {1}", newHeader.Key, String.IsNullOrEmpty(newHeader.Value) ? String.Empty : newHeader.Value));
+                        }
                     }
 
                 }
@@ -124,7 +141,7 @@ namespace ACSOnPremConnector
                     }
                 }
 
-                EventLog.AppendLogEntry(String.Format("ACSOnPremConnector:RerouteAll took {0} ms to execute", stopwatch.ElapsedMilliseconds));
+                EventLog.AppendLogEntry(String.Format("ACSOnPremConnector:RerouteExternalBasedOnAcceptedDomains took {0} ms to execute", stopwatch.ElapsedMilliseconds));
 
                 if (warningOccurred)
                 {
@@ -138,7 +155,7 @@ namespace ACSOnPremConnector
             }
             catch (Exception ex)
             {
-                EventLog.AppendLogEntry("Exception in ACSOnPremConnector:RerouteAll");
+                EventLog.AppendLogEntry("Exception in ACSOnPremConnector:RerouteExternalBasedOnAcceptedDomains");
                 EventLog.AppendLogEntry(ex);
                 EventLog.LogError();
             }
