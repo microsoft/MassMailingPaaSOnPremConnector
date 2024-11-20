@@ -21,7 +21,7 @@ namespace ACSOnPremConnector
         {
             return new ACSOnPremConnector_RerouteAllMessages();
         }
-}
+    }
     public class ACSOnPremConnector_RerouteAllMessages : RoutingAgent
     {
         static string EventLogName = "RerouteAllMessages";

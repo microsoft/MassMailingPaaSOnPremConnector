@@ -5,8 +5,6 @@ using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace ACSOnPremConnector
 {
@@ -175,7 +173,7 @@ namespace ACSOnPremConnector
                     }
                 }
 
-                if(messageProcessed)
+                if (messageProcessed)
                 {
                     foreach (var newHeader in ACSOnPremConnectorHeaders)
                     {

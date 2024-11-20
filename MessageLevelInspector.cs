@@ -2,11 +2,7 @@
 using Microsoft.Exchange.Data.Transport.Routing;
 using Microsoft.Win32;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ACSOnPremConnector
 {
@@ -20,7 +16,7 @@ namespace ACSOnPremConnector
      * For this agent, opposite to all others, DebugEnabled is assumed "true" unless disabled via registry key. It can be disabled bia Disable-TransportAgent if necessary.
      * This agent is not intended to be left on at all time, but rather to be enabled for troubleshooting and then disabled.
      */
-    public class MessageLevelInspector: RoutingAgentFactory
+    public class MessageLevelInspector : RoutingAgentFactory
     {
         public override RoutingAgent CreateAgent(SmtpServer server)
         {
@@ -64,7 +60,7 @@ namespace ACSOnPremConnector
             return;
         }
 
-        void PrintMessagePropertiesToLog (string phase, QueuedMessageEventArgs evtMessage)
+        void PrintMessagePropertiesToLog(string phase, QueuedMessageEventArgs evtMessage)
         {
             bool warningOccurred = false;
             Stopwatch stopwatch = Stopwatch.StartNew();
@@ -118,7 +114,7 @@ namespace ACSOnPremConnector
                 warningOccurred = true;
             }
 
-            if (evtMessage.MailItem.Message.Sender.SmtpAddress.ToString().ToLower().Trim() !=  evtMessage.MailItem.Message.From.SmtpAddress.ToString().ToLower().Trim())
+            if (evtMessage.MailItem.Message.Sender.SmtpAddress.ToString().ToLower().Trim() != evtMessage.MailItem.Message.From.SmtpAddress.ToString().ToLower().Trim())
             {
                 EventLog.AppendLogEntry("==================== IMPORTANT ====================");
                 EventLog.AppendLogEntry("Note that the P2 Sender and the P2 From mismatch. This can be source of problems");
