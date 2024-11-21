@@ -1,4 +1,4 @@
-name: TransportAgents .NETFramework Build
+name: ACSOnPremConnector .NETFramework Build
 
 on:
   push:
