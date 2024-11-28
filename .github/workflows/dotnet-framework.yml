@@ -1,4 +1,4 @@
-name: ACSOnPremConnector .NETFramework Build
+name: MassMailingPaaSOnPremConnector .NETFramework Build
 
 on:
   push:
@@ -8,7 +8,7 @@ jobs:
   build:
     runs-on: windows-latest
     env:
-      Solution_Name: ACSOnPremConnector.sln
+      Solution_Name: MassMailingPaaSOnPremConnector.sln
     steps:
 
     - name: Checkout
