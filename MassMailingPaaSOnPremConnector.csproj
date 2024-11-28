@@ -7,8 +7,8 @@
     <ProjectGuid>{FC349F32-64AF-4206-8D1A-1C91632348B6}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ACSOnPremConnector</RootNamespace>
-    <AssemblyName>ACSOnPremConnector</AssemblyName>
+    <RootNamespace>MassMailingPaaSOnPremConnector</RootNamespace>
+    <AssemblyName>MassMailingPaaSOnPremConnector</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>

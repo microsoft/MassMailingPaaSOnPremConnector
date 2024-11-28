@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace ACSOnPremConnector
+namespace MassMailingPaaSOnPremConnector
 {
     /*
      * Provides a simple logging mechanism to write to a text file. The text fille will be stored on logLocation and named logName.

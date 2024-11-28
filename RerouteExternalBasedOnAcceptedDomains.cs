@@ -6,47 +6,47 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace ACSOnPremConnector
+namespace MassMailingPaaSOnPremConnector
 {
     /*
-     * This class reroutes messages to external recipients when the header X-ACSOnPremConnector-Target set to a domain.
+     * This class reroutes messages to external recipients when the header X-MassMailingPaaSOnPremConnector-Target set to a domain.
      * The domain value doesn't need to be routable, but has to be avalid domain (i.e. something.value.tld).
      * This agent will reroute all the messages via the custom routing domain, only if the target domain is not an accepted domain (i.e. hotmail.com).
-     * As the X-ACSOnPremConnector-Target will likely be set via Transport Rule, exclusions can still be managed via the transport rules themselves if necessary.
-     * In case multiple agents are active at the same time, only the first one will trigger as the other will detect the presence of the X-ACSOnPremConnector-Target header which is used for loop protection. This is by design to protect mail loops.
+     * As the X-MassMailingPaaSOnPremConnector-Target will likely be set via Transport Rule, exclusions can still be managed via the transport rules themselves if necessary.
+     * In case multiple agents are active at the same time, only the first one will trigger as the other will detect the presence of the X-MassMailingPaaSOnPremConnector-Target header which is used for loop protection. This is by design to protect mail loops.
      */
     public class RerouteExternalBasedOnAcceptedDomains : RoutingAgentFactory
     {
         public override RoutingAgent CreateAgent(SmtpServer server)
         {
-            return new ACSOnPremConnector_RerouteExternalBasedOnAcceptedDomains(server.AcceptedDomains);
+            return new MassMailingPaaSOnPremConnector_RerouteExternalBasedOnAcceptedDomains(server.AcceptedDomains);
         }
     }
 
-    public class ACSOnPremConnector_RerouteExternalBasedOnAcceptedDomains : RoutingAgent
+    public class MassMailingPaaSOnPremConnector_RerouteExternalBasedOnAcceptedDomains : RoutingAgent
     {
         static string EventLogName = "RerouteExternalBasedOnAcceptedDomains";
         EventLogger EventLog = new EventLogger(EventLogName);
 
-        static readonly string ACSOnPremConnectorTargetName = "X-ACSOnPremConnector-Target";
-        static string ACSOnPremConnectorTargetValue = String.Empty;
+        static readonly string MassMailingPaaSOnPremConnectorTargetName = "X-MassMailingPaaSOnPremConnector-Target";
+        static string MassMailingPaaSOnPremConnectorTargetValue = String.Empty;
 
-        static readonly string RegistryHive = @"Software\TransportAgents\ACSOnPremConnector\RerouteExternalBasedOnAcceptedDomains";
+        static readonly string RegistryHive = @"Software\TransportAgents\MassMailingPaaSOnPremConnector\RerouteExternalBasedOnAcceptedDomains";
         static readonly string RegistryKeyDebugEnabled = "DebugEnabled";
         static bool DebugEnabled = false;
 
-        static readonly string ACSOnPremConnectorName = "X-ACSOnPremConnector-Name";
-        static readonly string ACSOnPremConnectorNameValue = "ACSOnPremConnector-RerouteExternalBasedOnAcceptedDomains";
-        static readonly Dictionary<string, string> ACSOnPremConnectorHeaders = new Dictionary<string, string>
+        static readonly string MassMailingPaaSOnPremConnectorName = "X-MassMailingPaaSOnPremConnector-Name";
+        static readonly string MassMailingPaaSOnPremConnectorNameValue = "MassMailingPaaSOnPremConnector-RerouteExternalBasedOnAcceptedDomains";
+        static readonly Dictionary<string, string> MassMailingPaaSOnPremConnectorHeaders = new Dictionary<string, string>
         {
-            {ACSOnPremConnectorName, ACSOnPremConnectorNameValue},
-            {"X-ACSOnPremConnector-Creator", "Tommaso Toniolo"},
-            {"X-ACSOnPremConnector-Contact", "https://aka.ms/totoni"}
+            {MassMailingPaaSOnPremConnectorName, MassMailingPaaSOnPremConnectorNameValue},
+            {"X-MassMailingPaaSOnPremConnector-Creator", "Tommaso Toniolo"},
+            {"X-MassMailingPaaSOnPremConnector-Contact", "https://aka.ms/totoni"}
         };
 
         static AcceptedDomainCollection acceptedDomains;
 
-        public ACSOnPremConnector_RerouteExternalBasedOnAcceptedDomains(AcceptedDomainCollection serverAcceptedDomains)
+        public MassMailingPaaSOnPremConnector_RerouteExternalBasedOnAcceptedDomains(AcceptedDomainCollection serverAcceptedDomains)
         {
             base.OnResolvedMessage += new ResolvedMessageEventHandler(RerouteExternalBasedOnAcceptedDomains);
 
@@ -75,19 +75,19 @@ namespace ACSOnPremConnector
                 HeaderList headers = evtMessage.MailItem.Message.MimeDocument.RootPart.Headers;
                 Stopwatch stopwatch = Stopwatch.StartNew();
 
-                EventLog.AppendLogEntry(String.Format("Processing message {0} from {1} with subject {2} in ACSOnPremConnector:RerouteExternalBasedOnAcceptedDomains", messageId, sender, subject));
+                EventLog.AppendLogEntry(String.Format("Processing message {0} from {1} with subject {2} in MassMailingPaaSOnPremConnector:RerouteExternalBasedOnAcceptedDomains", messageId, sender, subject));
 
-                Header ACSOnPremConnectorTarget = headers.FindFirst(ACSOnPremConnectorTargetName);
-                Header LoopPreventionHeader = headers.FindFirst(ACSOnPremConnectorName);
+                Header MassMailingPaaSOnPremConnectorTarget = headers.FindFirst(MassMailingPaaSOnPremConnectorTargetName);
+                Header LoopPreventionHeader = headers.FindFirst(MassMailingPaaSOnPremConnectorName);
 
-                if (ACSOnPremConnectorTarget != null && evtMessage.MailItem.Message.IsSystemMessage == false && LoopPreventionHeader == null)
+                if (MassMailingPaaSOnPremConnectorTarget != null && evtMessage.MailItem.Message.IsSystemMessage == false && LoopPreventionHeader == null)
                 {
-                    EventLog.AppendLogEntry(String.Format("Rerouting messages as the control header {0} is present", ACSOnPremConnectorTargetName));
-                    ACSOnPremConnectorTargetValue = ACSOnPremConnectorTarget.Value.Trim();
+                    EventLog.AppendLogEntry(String.Format("Rerouting messages as the control header {0} is present", MassMailingPaaSOnPremConnectorTargetName));
+                    MassMailingPaaSOnPremConnectorTargetValue = MassMailingPaaSOnPremConnectorTarget.Value.Trim();
 
-                    if (!String.IsNullOrEmpty(ACSOnPremConnectorTargetValue) && (Uri.CheckHostName(ACSOnPremConnectorTargetValue) == UriHostNameType.Dns))
+                    if (!String.IsNullOrEmpty(MassMailingPaaSOnPremConnectorTargetValue) && (Uri.CheckHostName(MassMailingPaaSOnPremConnectorTargetValue) == UriHostNameType.Dns))
                     {
-                        EventLog.AppendLogEntry(String.Format("Rerouting domain is valid as the header {0} is set to {1}", ACSOnPremConnectorTargetName, ACSOnPremConnectorTargetValue));
+                        EventLog.AppendLogEntry(String.Format("Rerouting domain is valid as the header {0} is set to {1}", MassMailingPaaSOnPremConnectorTargetName, MassMailingPaaSOnPremConnectorTargetValue));
 
                         foreach (EnvelopeRecipient recipient in evtMessage.MailItem.Recipients)
                         {
@@ -100,21 +100,21 @@ namespace ACSOnPremConnector
                             }
                             else
                             {
-                                RoutingDomain customRoutingDomain = new RoutingDomain(ACSOnPremConnectorTargetValue);
+                                RoutingDomain customRoutingDomain = new RoutingDomain(MassMailingPaaSOnPremConnectorTargetValue);
                                 RoutingOverride destinationOverride = new RoutingOverride(customRoutingDomain, DeliveryQueueDomain.UseOverrideDomain);
                                 source.SetRoutingOverride(recipient, destinationOverride);
-                                EventLog.AppendLogEntry(String.Format("Recipient {0} overridden to {1}", recipient.Address.ToString(), ACSOnPremConnectorTargetValue));
+                                EventLog.AppendLogEntry(String.Format("Recipient {0} overridden to {1}", recipient.Address.ToString(), MassMailingPaaSOnPremConnectorTargetValue));
                             }
                         }
                     }
                     else
                     {
-                        EventLog.AppendLogEntry(String.Format("There was a problem processing the {0} header value", ACSOnPremConnectorTargetName));
-                        EventLog.AppendLogEntry(String.Format("There value retrieved is: {0}", ACSOnPremConnectorTargetValue));
+                        EventLog.AppendLogEntry(String.Format("There was a problem processing the {0} header value", MassMailingPaaSOnPremConnectorTargetName));
+                        EventLog.AppendLogEntry(String.Format("There value retrieved is: {0}", MassMailingPaaSOnPremConnectorTargetValue));
                         warningOccurred = true;
                     }
 
-                    foreach (var newHeader in ACSOnPremConnectorHeaders)
+                    foreach (var newHeader in MassMailingPaaSOnPremConnectorHeaders)
                     {
                         Header HeaderExists = headers.FindFirst(newHeader.Key);
                         if (HeaderExists == null || HeaderExists.Value != newHeader.Value)
@@ -139,11 +139,11 @@ namespace ACSOnPremConnector
                     }
                     else
                     {
-                        EventLog.AppendLogEntry(String.Format("Message has not been processed as {0} is not set", ACSOnPremConnectorTargetName));
+                        EventLog.AppendLogEntry(String.Format("Message has not been processed as {0} is not set", MassMailingPaaSOnPremConnectorTargetName));
                     }
                 }
 
-                EventLog.AppendLogEntry(String.Format("ACSOnPremConnector:RerouteExternalBasedOnAcceptedDomains took {0} ms to execute", stopwatch.ElapsedMilliseconds));
+                EventLog.AppendLogEntry(String.Format("MassMailingPaaSOnPremConnector:RerouteExternalBasedOnAcceptedDomains took {0} ms to execute", stopwatch.ElapsedMilliseconds));
 
                 if (warningOccurred)
                 {
@@ -157,7 +157,7 @@ namespace ACSOnPremConnector
             }
             catch (Exception ex)
             {
-                EventLog.AppendLogEntry("Exception in ACSOnPremConnector:RerouteExternalBasedOnAcceptedDomains");
+                EventLog.AppendLogEntry("Exception in MassMailingPaaSOnPremConnector:RerouteExternalBasedOnAcceptedDomains");
                 EventLog.AppendLogEntry(ex);
                 EventLog.LogError();
             }

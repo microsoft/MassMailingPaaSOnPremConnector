@@ -3,13 +3,13 @@ using System.Diagnostics;
 using System.Security;
 using System.Text;
 
-namespace ACSOnPremConnector
+namespace MassMailingPaaSOnPremConnector
 {
     /*
      * Provides a simple logging mechanism to write to the Windows Event Log.
      * This will try to create a new Event Source (defined by eventSource) if it does not exist, if the operation fails, it will default to "Application".
      * For the creation of the Event Source, the user running the application must have the necessary permissions to create a new Event Source (requires Admin privileges).
-     * The logging will be attempted on the custom Event Source (as defined on eventSource), if it fails, writing will be attempted on ACSOnPremConnector, if that fails again it will default to "Application".
+     * The logging will be attempted on the custom Event Source (as defined on eventSource), if it fails, writing will be attempted on MassMailingPaaSOnPremConnector, if that fails again it will default to "Application".
      */
     internal class EventLogger : IDisposable
     {
@@ -32,7 +32,7 @@ namespace ACSOnPremConnector
             {
                 try
                 {
-                    Source = "ACSOnPremConnector";
+                    Source = "MassMailingPaaSOnPremConnector";
                     if (!!EventLog.SourceExists(Source))
                     {
                         EventLog.CreateEventSource(Source, "Application");

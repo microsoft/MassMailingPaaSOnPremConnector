@@ -4,7 +4,7 @@ using Microsoft.Win32;
 using System;
 using System.Diagnostics;
 
-namespace ACSOnPremConnector
+namespace MassMailingPaaSOnPremConnector
 {
     /*
      * This class provides debug functionality to log the properties of the message during processing.
@@ -20,19 +20,19 @@ namespace ACSOnPremConnector
     {
         public override RoutingAgent CreateAgent(SmtpServer server)
         {
-            return new ACSOnPremConnector_MessageLevelInspector();
+            return new MassMailingPaaSOnPremConnector_MessageLevelInspector();
         }
     }
-    public class ACSOnPremConnector_MessageLevelInspector : RoutingAgent
+    public class MassMailingPaaSOnPremConnector_MessageLevelInspector : RoutingAgent
     {
         static string EventLogName = "MessageLevelInspector";
         EventLogger EventLog = new EventLogger(EventLogName);
 
-        static readonly string RegistryHive = @"Software\TransportAgents\ACSOnPremConnector\MessageLevelInspector";
+        static readonly string RegistryHive = @"Software\TransportAgents\MassMailingPaaSOnPremConnector\MessageLevelInspector";
         static readonly string RegistryKeyDebugEnabled = "DebugEnabled";
         static bool DebugEnabled = true;
 
-        public ACSOnPremConnector_MessageLevelInspector()
+        public MassMailingPaaSOnPremConnector_MessageLevelInspector()
         {
             base.OnSubmittedMessage += new SubmittedMessageEventHandler(MessageLevelInspectorPreProcess);
             base.OnCategorizedMessage += new CategorizedMessageEventHandler(MessageLevelInspectorPostProcess);
@@ -65,7 +65,7 @@ namespace ACSOnPremConnector
             bool warningOccurred = false;
             Stopwatch stopwatch = Stopwatch.StartNew();
 
-            EventLog.AppendLogEntry(String.Format("Processing message in ACSOnPremConnector:MessageLevelInspector:{0}", phase));
+            EventLog.AppendLogEntry(String.Format("Processing message in MassMailingPaaSOnPremConnector:MessageLevelInspector:{0}", phase));
 
             EventLog.AppendLogEntry("==================== ENVELOPE - P1 ====================");
             EventLog.AppendLogEntry(String.Format("EnvelopeId: {0}", evtMessage.MailItem.EnvelopeId));
@@ -129,7 +129,7 @@ namespace ACSOnPremConnector
                 warningOccurred = true;
             }
 
-            EventLog.AppendLogEntry(String.Format("ACSOnPremConnector:MessageLevelInspector:{0} took {1} ms to execute", phase, stopwatch.ElapsedMilliseconds));
+            EventLog.AppendLogEntry(String.Format("MassMailingPaaSOnPremConnector:MessageLevelInspector:{0} took {1} ms to execute", phase, stopwatch.ElapsedMilliseconds));
 
             if (warningOccurred)
             {

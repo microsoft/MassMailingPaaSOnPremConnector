@@ -4,11 +4,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("ACSOnPremConnector")]
-[assembly: AssemblyDescription("Provide the features for the On-Premises Connector required by Azure Communication Services to integrate incompatible devices such as those devices/apps unalbe to authenticate or using ACS-unsupported authententication mechanisms (IP-based, Cerntificate-Based, WindowsIntegrated, etc.)")]
+[assembly: AssemblyTitle("MassMailingPaaSOnPremConnector")]
+[assembly: AssemblyDescription("Provide the features for the On-Premises Connector required by Mass-Mailing PaaS to integrate incompatible devices such as those devices/apps unalbe to authenticate or using unsupported authententication mechanisms (IP-based, Cerntificate-Based, WindowsIntegrated, etc.)")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Tommaso Toniolo - Sr. Cloud Solution Architect @ Microsoft")]
-[assembly: AssemblyProduct("ACSOnPremConnector")]
+[assembly: AssemblyProduct("MassMailingPaaSOnPremConnector")]
 [assembly: AssemblyCopyright("Copyright ©  2024")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
