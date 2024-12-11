@@ -40,9 +40,7 @@ namespace MassMailingPaaSOnPremConnector
         static readonly string MassMailingPaaSOnPremConnectorNameValue = "MassMailingPaaSOnPremConnector-ProcessSenderMismatch";
         static readonly Dictionary<string, string> MassMailingPaaSOnPremConnectorHeaders = new Dictionary<string, string>
         {
-            {MassMailingPaaSOnPremConnectorName, MassMailingPaaSOnPremConnectorNameValue},
-            {"X-MassMailingPaaSOnPremConnector-Creator", "Tommaso Toniolo"},
-            {"X-MassMailingPaaSOnPremConnector-Contact", "https://aka.ms/totoni"}
+            {MassMailingPaaSOnPremConnectorName, MassMailingPaaSOnPremConnectorNameValue}
         };
 
         public MassMailingPaaSOnPremConnector_ProcessSenderMismatch()
