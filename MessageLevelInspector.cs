@@ -3,6 +3,7 @@ using Microsoft.Exchange.Data.Transport.Routing;
 using Microsoft.Win32;
 using System;
 using System.Diagnostics;
+using System.IO;
 
 namespace MassMailingPaaSOnPremConnector
 {
@@ -106,6 +107,22 @@ namespace MassMailingPaaSOnPremConnector
             foreach (var recipient in evtMessage.MailItem.Message.ReplyTo)
                 EventLog.AppendLogEntry(String.Format("P2 ReplyTo: {0}", recipient.SmtpAddress.ToString().ToLower().Trim()));
 
+            EventLog.AppendLogEntry("==================== ATTACHMENTS ====================");
+            if (evtMessage.MailItem.Message.Attachments.Count > 0)
+            {
+                EventLog.AppendLogEntry(String.Format("The message contains {0} attachments", evtMessage.MailItem.Message.Attachments.Count));
+                foreach (var attachment in evtMessage.MailItem.Message.Attachments)
+                {
+                    Stream attachmentStream = null;
+                    attachment.TryGetContentReadStream(out attachmentStream);
+                    EventLog.AppendLogEntry(String.Format("File Name: {0}; Attachment Type: {1}; File Size: {2} bytes", attachment.FileName, attachment.AttachmentType, attachmentStream == null ? "Null" : attachmentStream.Length.ToString()));
+                }
+            }
+            else
+            {
+                EventLog.AppendLogEntry("There are no attachments in the message");
+            }
+
             if ((evtMessage.MailItem.FromAddress.ToString().ToLower().Trim() != evtMessage.MailItem.Message.Sender.SmtpAddress.ToString().ToLower().Trim()) ||
                 (evtMessage.MailItem.FromAddress.ToString().ToLower().Trim() != evtMessage.MailItem.Message.From.SmtpAddress.ToString().ToLower().Trim()))
             {
@@ -129,6 +146,7 @@ namespace MassMailingPaaSOnPremConnector
                 warningOccurred = true;
             }
 
+            EventLog.AppendLogEntry("=======================================================");
             EventLog.AppendLogEntry(String.Format("MassMailingPaaSOnPremConnector:MessageLevelInspector:{0} took {1} ms to execute", phase, stopwatch.ElapsedMilliseconds));
 
             if (warningOccurred)
