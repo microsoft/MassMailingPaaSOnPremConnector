@@ -58,6 +58,7 @@
     <Compile Include="RerouteAllMessages.cs" />
     <Compile Include="RerouteExternalBasedOnAcceptedDomains.cs" />
     <Compile Include="RerouteExternalBasedOnGAL.cs" />
+    <Compile Include="RerouteExtrernalBasedOnRegistryExclusions.cs" />
     <Compile Include="RerouteExtrernalBasedOnTransportCategorization.cs" />
     <Compile Include="TextLogger.cs" />
   </ItemGroup>
