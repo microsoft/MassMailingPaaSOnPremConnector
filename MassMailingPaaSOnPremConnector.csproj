@@ -60,6 +60,7 @@
     <Compile Include="RerouteExternalBasedOnGAL.cs" />
     <Compile Include="RerouteExtrernalBasedOnRegistryExclusions.cs" />
     <Compile Include="RerouteExtrernalBasedOnTransportCategorization.cs" />
+    <Compile Include="RewriteRecipientDomain.cs" />
     <Compile Include="TextLogger.cs" />
   </ItemGroup>
   <ItemGroup>
