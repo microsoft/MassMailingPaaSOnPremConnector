@@ -14,7 +14,7 @@ namespace MassMailingPaaSOnPremConnector
     {
         /*
          * This class rewrites the recipeint domain for those recipients mathicng the content of the header X-MassMailingPaaSOnPremConnector-RecipientRewriteMap.
-         * The header value is expected to be a semicolon (;) separated string mapping "<original>:<desired>" such as "contoso.com=tailspintoys.com" or "contoso.com=tailspintoys.com;hotmail.it=hotmail.com".
+         * The header value is expected to be a semicolon (;) separated string mapping "<original>=<desired>" with the "=" separating the value fo each entry, such as "contoso.com=tailspintoys.com" or "contoso.com=tailspintoys.com;hotmail.it=hotmail.com".
          * The domain value doesn't need to be routable, but has to be avalid domain (i.e. something.value.tld).
          * As the X-MassMailingPaaSOnPremConnector-RecipientRewriteMap will likely be set via Transport Rule, exclusions can be managed via the transport rules themselves (i.e. insert the X-MassMailingPaaSOnPremConnector-RecipientRewriteMap header only if the recipient domain is not xyz).
          * In case multiple agents are active at the same time, be careful about the agent execution oder.
