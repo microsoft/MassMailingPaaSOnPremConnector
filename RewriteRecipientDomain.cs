@@ -1,6 +1,5 @@
 ﻿using Microsoft.Exchange.Data.Mime;
 using Microsoft.Exchange.Data.Transport;
-using Microsoft.Exchange.Data.Transport.Email;
 using Microsoft.Exchange.Data.Transport.Routing;
 using Microsoft.Win32;
 using System;
