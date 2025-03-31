@@ -1,4 +1,6 @@
-﻿using Microsoft.Exchange.Data.Mime;
+﻿// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+using Microsoft.Exchange.Data.Mime;
 using Microsoft.Exchange.Data.Transport;
 using Microsoft.Exchange.Data.Transport.Routing;
 using Microsoft.Win32;
