@@ -51,36 +51,36 @@ namespace MassMailingPaaSOnPremConnector
             }
         }
 
-        public void LogDebug(bool isDebugEnabled = true)
+        public void LogDebug(bool isDebugEnabled = true, int eventID = 1, short category = 1)
         {
             if (isDebugEnabled)
             {
-                EventLog.WriteEntry(Source, EventLogMessage.ToString(), EventLogEntryType.Information);
+                EventLog.WriteEntry(Source, EventLogMessage.ToString(), EventLogEntryType.Information, eventID, category);
             }
             EventLogMessage.Clear();
         }
 
-        public void LogInformation()
+        public void LogInformation(int eventID = 1, short category = 1)
         {
-            EventLog.WriteEntry(Source, EventLogMessage.ToString(), EventLogEntryType.Information);
+            EventLog.WriteEntry(Source, EventLogMessage.ToString(), EventLogEntryType.Information, eventID, category);
             EventLogMessage.Clear();
         }
 
-        public void LogWarning()
+        public void LogWarning(int eventID = 3, short category = 1)
         {
-            EventLog.WriteEntry(Source, EventLogMessage.ToString(), EventLogEntryType.Warning);
+            EventLog.WriteEntry(Source, EventLogMessage.ToString(), EventLogEntryType.Warning, eventID, category);
             EventLogMessage.Clear();
         }
 
-        public void LogError()
+        public void LogError(int eventID = 5, short category = 1)
         {
-            EventLog.WriteEntry(Source, EventLogMessage.ToString(), EventLogEntryType.Error);
+            EventLog.WriteEntry(Source, EventLogMessage.ToString(), EventLogEntryType.Error, eventID, category);
             EventLogMessage.Clear();
         }
 
-        public void LogException()
+        public void LogException(int eventID = 9, short category = 1)
         {
-            EventLog.WriteEntry(Source, EventLogMessage.ToString(), EventLogEntryType.Error);
+            EventLog.WriteEntry(Source, EventLogMessage.ToString(), EventLogEntryType.Error, eventID, category);
             EventLogMessage.Clear();
         }
 

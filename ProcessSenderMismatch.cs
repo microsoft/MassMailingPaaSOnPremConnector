@@ -64,7 +64,8 @@ namespace MassMailingPaaSOnPremConnector
         {
             try
             {
-                bool warningOccurred = false;
+                bool warningOccurred = false;  // controls whether there event log entry is a warning or informational; if anything is out of order log a warning instead of an information log entry. Warnings and Errors are logged regardless of the DebugEnabled setting.
+                bool hasProcessedMessage = false; // will be set to true when the message is processed (header present) to only write debug logs when the agent processes the message, and avoiding to log information for messages that has no control header set
                 bool messageProcessed = false;
                 string messageId = evtMessage.MailItem.Message.MessageId.ToString();
                 string sender = evtMessage.MailItem.FromAddress.ToString().ToLower().Trim();
@@ -80,6 +81,7 @@ namespace MassMailingPaaSOnPremConnector
 
                 if (MassMailingPaaSOnPremConnectorP1P2MismatchAction != null && evtMessage.MailItem.Message.IsSystemMessage == false)
                 {
+                    hasProcessedMessage = true; 
                     EventLog.AppendLogEntry(String.Format("Evaluating P1/P2 Sender Mismatch as the control header {0} is present", MassMailingPaaSOnPremConnectorP1P2MismatchActionName));
                     MassMailingPaaSOnPremConnectorP1P2MismatchActionValue = MassMailingPaaSOnPremConnectorP1P2MismatchAction.Value.Trim().ToUpper();
 
@@ -140,6 +142,7 @@ namespace MassMailingPaaSOnPremConnector
 
                 if (MassMailingPaaSOnPremConnectorForceP1 != null && evtMessage.MailItem.Message.IsSystemMessage == false)
                 {
+                    hasProcessedMessage = true; 
                     EventLog.AppendLogEntry(String.Format("Overriding P1 Sender as the control header {0} is present", MassMailingPaaSOnPremConnectorForceP1Name));
                     MassMailingPaaSOnPremConnectorForceP1Value = MassMailingPaaSOnPremConnectorForceP1.Value.Trim().ToUpper();
 
@@ -194,7 +197,10 @@ namespace MassMailingPaaSOnPremConnector
                 }
                 else
                 {
-                    EventLog.LogDebug(DebugEnabled);
+                    if (hasProcessedMessage)
+                    {
+                        EventLog.LogDebug(DebugEnabled);
+                    }
                 }
 
             }
