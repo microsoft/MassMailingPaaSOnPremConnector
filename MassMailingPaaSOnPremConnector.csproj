@@ -68,5 +68,13 @@
     <Content Include="Dependancies\Microsoft.Exchange.Data.Common.dll" />
     <Content Include="Dependancies\Microsoft.Exchange.Data.Transport.dll" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Utilities\Disable_Debug_Log_for_TA.reg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Utilities\Enable_Debug_Log_for_TA.reg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
