@@ -107,6 +107,11 @@ namespace MassMailingPaaSOnPremConnector
             EventLogMessage.AppendLine(obj.ToString());
         }
 
+        public void ClearLogEntry()
+        {
+            EventLogMessage.Clear();
+        }
+
         ~EventLogger()
         {
             WriteEventLogOnExit();

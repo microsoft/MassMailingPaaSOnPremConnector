@@ -152,6 +152,10 @@ namespace MassMailingPaaSOnPremConnector
                     {
                         EventLog.LogDebug(DebugEnabled);
                     }
+                    else
+                    {
+                        EventLog.ClearLogEntry();
+                    }
                 }
 
             }
