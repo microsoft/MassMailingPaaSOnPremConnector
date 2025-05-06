@@ -67,6 +67,7 @@
   <ItemGroup>
     <Content Include="Dependancies\Microsoft.Exchange.Data.Common.dll" />
     <Content Include="Dependancies\Microsoft.Exchange.Data.Transport.dll" />
+    <Content Include="Utilities\Example_Cmdlets.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Utilities\Disable_Debug_Log_for_TA.reg">

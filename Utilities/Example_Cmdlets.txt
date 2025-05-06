@@ -1,0 +1,62 @@
+﻿------------- EVENT LOG CREATION
+New-EventLog -LogName Application -Source MassMailingPaaSOnPremConnector
+New-EventLog -LogName Application -Source MessageLevelInspector
+New-EventLog -LogName Application -Source ProcessSenderMismatch
+New-EventLog -LogName Application -Source RerouteAllMessages
+New-EventLog -LogName Application -Source RerouteExternalBasedOnAcceptedDomains
+New-EventLog -LogName Application -Source RerouteExternalBasedOnGAL
+New-EventLog -LogName Application -Source RerouteExtrernalBasedOnRegistryExclusions
+New-EventLog -LogName Application -Source RerouteExtrernalBasedOnTransportCategorization
+New-EventLog -LogName Application -Source RewriteRecipientDomain
+New-EventLog -LogName Application -Source RewriteSenderDomain
+
+
+------------- INSTALLATION
+Install-TransportAgent -Name MessageLevelInspector -TransportAgentFactory "MassMailingPaaSOnPremConnector.MessageLevelInspector" -AssemblyPath "E:\Transport Agents\MassMailingPaaSOnPremConnector.dll" -Confirm:$False
+Install-TransportAgent -Name ProcessSenderMismatch -TransportAgentFactory "MassMailingPaaSOnPremConnector.ProcessSenderMismatch" -AssemblyPath "E:\Transport Agents\MassMailingPaaSOnPremConnector.dll" -Confirm:$False
+Install-TransportAgent -Name RerouteAllMessages -TransportAgentFactory "MassMailingPaaSOnPremConnector.RerouteAllMessages" -AssemblyPath "E:\Transport Agents\MassMailingPaaSOnPremConnector.dll" -Confirm:$False
+Install-TransportAgent -Name RerouteExternalBasedOnAcceptedDomains -TransportAgentFactory "MassMailingPaaSOnPremConnector.RerouteExternalBasedOnAcceptedDomains" -AssemblyPath "E:\Transport Agents\MassMailingPaaSOnPremConnector.dll" -Confirm:$False
+Install-TransportAgent -Name RerouteExternalBasedOnGAL -TransportAgentFactory "MassMailingPaaSOnPremConnector.RerouteExternalBasedOnGAL" -AssemblyPath "E:\Transport Agents\MassMailingPaaSOnPremConnector.dll" -Confirm:$False
+Install-TransportAgent -Name RerouteExtrernalBasedOnRegistryExclusions -TransportAgentFactory "MassMailingPaaSOnPremConnector.RerouteExtrernalBasedOnRegistryExclusions" -AssemblyPath "E:\Transport Agents\MassMailingPaaSOnPremConnector.dll" -Confirm:$False
+Install-TransportAgent -Name RerouteExtrernalBasedOnTransportCategorization -TransportAgentFactory "MassMailingPaaSOnPremConnector.RerouteExtrernalBasedOnTransportCategorization" -AssemblyPath "E:\Transport Agents\MassMailingPaaSOnPremConnector.dll" -Confirm:$False
+Install-TransportAgent -Name RewriteRecipientDomain -TransportAgentFactory "MassMailingPaaSOnPremConnector.RewriteRecipientDomain" -AssemblyPath "E:\Transport Agents\MassMailingPaaSOnPremConnector.dll" -Confirm:$False
+Install-TransportAgent -Name RewriteSenderDomain -TransportAgentFactory "MassMailingPaaSOnPremConnector.RewriteSenderDomain" -AssemblyPath "E:\Transport Agents\MassMailingPaaSOnPremConnector.dll" -Confirm:$False
+
+
+------------- ENABLEMENT
+Enable-TransportAgent MessageLevelInspector -Confirm:$False
+Enable-TransportAgent ProcessSenderMismatch -Confirm:$False
+Enable-TransportAgent RerouteAllMessages -Confirm:$False
+Enable-TransportAgent RerouteExternalBasedOnAcceptedDomains -Confirm:$False
+Enable-TransportAgent RerouteExternalBasedOnGAL -Confirm:$False
+Enable-TransportAgent RerouteExtrernalBasedOnRegistryExclusions -Confirm:$False
+Enable-TransportAgent RerouteExtrernalBasedOnTransportCategorization -Confirm:$False
+Enable-TransportAgent RewriteRecipientDomain -Confirm:$False
+Enable-TransportAgent RewriteSenderDomain -Confirm:$False
+
+------------- DISABLEMENT
+Disable-TransportAgent MessageLevelInspector -Confirm:$False
+Disable-TransportAgent ProcessSenderMismatch -Confirm:$False
+Disable-TransportAgent RerouteAllMessages -Confirm:$False
+Disable-TransportAgent RerouteExternalBasedOnAcceptedDomains -Confirm:$False
+Disable-TransportAgent RerouteExternalBasedOnGAL -Confirm:$False
+Disable-TransportAgent RerouteExtrernalBasedOnRegistryExclusions -Confirm:$False
+Disable-TransportAgent RerouteExtrernalBasedOnTransportCategorization -Confirm:$False
+Disable-TransportAgent RewriteRecipientDomain -Confirm:$False
+Disable-TransportAgent RewriteSenderDomain -Confirm:$False
+
+
+------------- UNINSTALLATION
+Uninstall-TransportAgent MessageLevelInspector -Confirm:$False
+Uninstall-TransportAgent ProcessSenderMismatch -Confirm:$False
+Uninstall-TransportAgent RerouteAllMessages -Confirm:$False
+Uninstall-TransportAgent RerouteExternalBasedOnAcceptedDomains -Confirm:$False
+Uninstall-TransportAgent RerouteExternalBasedOnGAL -Confirm:$False
+Uninstall-TransportAgent RerouteExtrernalBasedOnRegistryExclusions -Confirm:$False
+Uninstall-TransportAgent RerouteExtrernalBasedOnTransportCategorization -Confirm:$False
+Uninstall-TransportAgent RewriteRecipientDomain -Confirm:$False
+Uninstall-TransportAgent RewriteSenderDomain -Confirm:$False
+
+
+------------- RESTART OF TRANSPORT SERVICE
+Restart-Service MSExchangeTransport
