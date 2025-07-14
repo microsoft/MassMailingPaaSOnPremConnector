@@ -122,7 +122,7 @@ namespace MassMailingPaaSOnPremConnector
                             else
                             {
                                 RoutingDomain customRoutingDomain = new RoutingDomain(MassMailingPaaSOnPremConnectorTargetValue);
-                                RoutingOverride destinationOverride = new RoutingOverride(customRoutingDomain, DeliveryQueueDomain.UseOverrideDomain);
+                                RoutingOverride destinationOverride = new RoutingOverride(customRoutingDomain, DeliveryQueueDomain.UseRecipientDomain);
                                 source.SetRoutingOverride(recipient, destinationOverride);
                                 EventLog.AppendLogEntry(String.Format("Recipient {0} overridden to {1}", recipient.Address.ToString(), MassMailingPaaSOnPremConnectorTargetValue));
                             }
