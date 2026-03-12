@@ -67,7 +67,7 @@ namespace MassMailingPaaSOnPremConnector
                 bool warningOccurred = false;  // controls whether there event log entry is a warning or informational; if anything is out of order log a warning instead of an information log entry. Warnings and Errors are logged regardless of the DebugEnabled setting.
                 bool hasProcessedMessage = false; // will be set to true when the message is processed (header present) to only write debug logs when the agent processes the message, and avoiding to log information for messages that has no control header set
                 string messageId = evtMessage.MailItem.Message.MessageId.ToString();
-                string sender = evtMessage.MailItem.FromAddress.ToString().ToLower().Trim();
+                string sender = evtMessage.MailItem.FromAddress.ToString().Trim();
                 string subject = evtMessage.MailItem.Message.Subject.Trim();
                 HeaderList headers = evtMessage.MailItem.Message.MimeDocument.RootPart.Headers;
                 Stopwatch stopwatch = Stopwatch.StartNew();
