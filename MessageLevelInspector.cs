@@ -86,7 +86,7 @@ namespace MassMailingPaaSOnPremConnector
             EventLog.AppendLogEntry(String.Format("OriginalAuthenticator: {0}", evtMessage.MailItem.OriginalAuthenticator));
 
             foreach (var item in evtMessage.MailItem.Properties)
-                EventLog.AppendLogEntry(String.Format("Property - {0}: {1}", item.Key.ToString(), item.Value.ToString()));
+                EventLog.AppendLogEntry(String.Format("Property - {0}: {1}", item.Key.ToString(), item.Value != null ? item.Value.ToString() : "EMPTY"));
 
             EventLog.AppendLogEntry("==================== HEADERS ====================");
             foreach (var header in evtMessage.MailItem.Message.MimeDocument.RootPart.Headers)
@@ -95,21 +95,21 @@ namespace MassMailingPaaSOnPremConnector
             EventLog.AppendLogEntry("==================== MESSAGE - P2 ====================");
             EventLog.AppendLogEntry(String.Format("MessageId: {0}", evtMessage.MailItem.Message.MessageId.ToString()));
             EventLog.AppendLogEntry(String.Format("Subject: {0}", evtMessage.MailItem.Message.Subject.Trim()));
-            EventLog.AppendLogEntry(String.Format("P2 Sender: {0}", evtMessage.MailItem.Message.Sender.SmtpAddress.ToString().Trim()));
-            EventLog.AppendLogEntry(String.Format("P2 From: {0}", evtMessage.MailItem.Message.From.SmtpAddress.ToString().Trim()));
+            EventLog.AppendLogEntry(String.Format("P2 Sender: {0}", evtMessage.MailItem.Message.Sender?.SmtpAddress?.ToString().Trim() ?? "EMPTY"));
+            EventLog.AppendLogEntry(String.Format("P2 From: {0}", evtMessage.MailItem.Message.From?.SmtpAddress?.ToString().Trim() ?? "EMPTY"));
             EventLog.AppendLogEntry(String.Format("MapiMessageClass: {0}", evtMessage.MailItem.Message.MapiMessageClass.ToString().Trim()));
 
             foreach (var recipient in evtMessage.MailItem.Message.To)
-                EventLog.AppendLogEntry(String.Format("P2 To: {0}", recipient.SmtpAddress.ToString().Trim()));
+                EventLog.AppendLogEntry(String.Format("P2 To: {0}", recipient.SmtpAddress?.Trim() ?? "EMPTY"));
 
             foreach (var recipient in evtMessage.MailItem.Message.Cc)
-                EventLog.AppendLogEntry(String.Format("P2 Cc: {0}", recipient.SmtpAddress.ToString().Trim()));
+                EventLog.AppendLogEntry(String.Format("P2 Cc: {0}", recipient.SmtpAddress?.Trim() ?? "EMPTY"));
 
             foreach (var recipient in evtMessage.MailItem.Message.Bcc)
-                EventLog.AppendLogEntry(String.Format("P2 Bcc: {0}", recipient.SmtpAddress.ToString().Trim()));
+                EventLog.AppendLogEntry(String.Format("P2 Bcc: {0}", recipient.SmtpAddress?.Trim() ?? "EMPTY"));
 
             foreach (var recipient in evtMessage.MailItem.Message.ReplyTo)
-                EventLog.AppendLogEntry(String.Format("P2 ReplyTo: {0}", recipient.SmtpAddress.ToString().Trim()));
+                EventLog.AppendLogEntry(String.Format("P2 ReplyTo: {0}", recipient.SmtpAddress?.Trim() ?? "EMPTY"));
 
             EventLog.AppendLogEntry("==================== ATTACHMENTS ====================");
             if (evtMessage.MailItem.Message.Attachments.Count > 0)
@@ -131,26 +131,39 @@ namespace MassMailingPaaSOnPremConnector
                 EventLog.AppendLogEntry("There are no attachments in the message");
             }
 
-            if (!String.Equals(evtMessage.MailItem.FromAddress.ToString().Trim(), evtMessage.MailItem.Message.Sender.SmtpAddress.ToString().Trim(), StringComparison.OrdinalIgnoreCase) ||
-                !String.Equals(evtMessage.MailItem.FromAddress.ToString().Trim(), evtMessage.MailItem.Message.From.SmtpAddress.ToString().Trim(), StringComparison.OrdinalIgnoreCase))
-            {
-                EventLog.AppendLogEntry("==================== IMPORTANT ====================");
-                EventLog.AppendLogEntry("Note that the P1 Sender and the P2 Sender mismatch. This can be source of problems");
-                warningOccurred = true;
-            }
+            string P1Address = evtMessage.MailItem.FromAddress.ToString().Trim();
+            string P2SenderAddress = evtMessage.MailItem.Message.Sender?.SmtpAddress?.ToString().Trim();
+            string P2FromAddress = evtMessage.MailItem.Message.From?.SmtpAddress?.ToString().Trim();
 
-            if (!String.Equals(evtMessage.MailItem.Message.Sender.SmtpAddress.ToString().Trim(), evtMessage.MailItem.Message.From.SmtpAddress.ToString().Trim(), StringComparison.OrdinalIgnoreCase))
+            if (P2SenderAddress != null && P2FromAddress != null)
             {
-                EventLog.AppendLogEntry("==================== IMPORTANT ====================");
-                EventLog.AppendLogEntry("Note that the P2 Sender and the P2 From mismatch. This can be source of problems");
-                warningOccurred = true;
-            }
+                if (!String.Equals(P1Address, P2SenderAddress, StringComparison.OrdinalIgnoreCase) ||
+                    !String.Equals(P1Address, P2FromAddress, StringComparison.OrdinalIgnoreCase))
+                {
+                    EventLog.AppendLogEntry("==================== IMPORTANT ====================");
+                    EventLog.AppendLogEntry("Note that the P1 Sender and the P2 Sender mismatch.");
+                    warningOccurred = true;
+                }
 
-            if (evtMessage.MailItem.Message.Sender.SmtpAddress.ToString().Trim().Contains(",") ||
-                evtMessage.MailItem.Message.From.SmtpAddress.ToString().Trim().Contains(","))
+                if (!String.Equals(P2SenderAddress, P2FromAddress, StringComparison.OrdinalIgnoreCase))
+                {
+                    EventLog.AppendLogEntry("==================== IMPORTANT ====================");
+                    EventLog.AppendLogEntry("Note that the P2 Sender and the P2 From mismatch.");
+                    warningOccurred = true;
+                }
+
+                if (P2SenderAddress.Contains(",") || P2FromAddress.Contains(","))
+                {
+                    EventLog.AppendLogEntry("==================== IMPORTANT ====================");
+                    EventLog.AppendLogEntry("Note that the P2 Sender or From contains a comma ','.");
+                    EventLog.AppendLogEntry("This might mean there are multiple From address set.");
+                    warningOccurred = true;
+                }
+            }
+            else
             {
                 EventLog.AppendLogEntry("==================== IMPORTANT ====================");
-                EventLog.AppendLogEntry("Note that the P2 Sender or From contains a comma ','. This might mean there are multiple From address set and can be source of problems");
+                EventLog.AppendLogEntry("Note that the either P2 Sender, or P2 From, or both are null.");
                 warningOccurred = true;
             }
 
