@@ -88,9 +88,15 @@ namespace MassMailingPaaSOnPremConnector
 
                     if (!String.IsNullOrEmpty(MassMailingPaaSOnPremConnectorTargetValue))
                     {
-                        RecipientRewriteMap = MassMailingPaaSOnPremConnectorTargetValue.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
-                                                                                       .Select(part => part.Split('='))
-                                                                                       .ToDictionary(split => split[0].Trim(), split => split[1].Trim(), StringComparer.OrdinalIgnoreCase);
+                        RecipientRewriteMap = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+                        foreach (string mappingEntry in MassMailingPaaSOnPremConnectorTargetValue.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries))
+                        {
+                            string[] valuePair = mappingEntry.Split('=');
+                            if (valuePair.Length == 2)
+                            {
+                                RecipientRewriteMap[valuePair[0].Trim()] = valuePair[1].Trim();
+                            }
+                        }
 
                         EventLog.AppendLogEntry(String.Format("Recipient domain rewite map start"));
                         foreach (var MapEntry in RecipientRewriteMap)
