@@ -120,37 +120,53 @@ namespace MassMailingPaaSOnPremConnector
                         }
 
                         // Rewriting P2 sender (FROM:)
-                        string P2MsgFrom = evtMessage.MailItem.Message.From.SmtpAddress;
-                        int P2FromAtIndex = P2MsgFrom.IndexOf("@");
-                        int P2FromRecLength = P2MsgFrom.Length;
-                        string P2FromLocal = P2MsgFrom.Substring(0, P2FromAtIndex);
-                        string P2FromDomain = P2MsgFrom.Substring(P2FromAtIndex + 1, P2FromRecLength - P2FromAtIndex - 1);
-                        string P2FromNewDomain = string.Empty;
-
-                        EventLog.AppendLogEntry(String.Format("Evaluating P2 FROM: {0}", P2MsgFrom));
-
-                        if (SenderRewriteMap.ContainsKey(P2FromDomain))
+                        if (evtMessage.MailItem.Message.From != null && evtMessage.MailItem.Message.From.SmtpAddress != null)
                         {
-                            P2FromNewDomain = SenderRewriteMap[P2FromDomain];
-                            evtMessage.MailItem.Message.From.SmtpAddress = P2FromLocal + "@" + P2FromNewDomain;
-                            EventLog.AppendLogEntry(String.Format("P2 FROM {0}@{1} rewritten to {2}@{3}", P2FromLocal, P2FromDomain, P2FromLocal, P2FromNewDomain));
+                            string P2MsgFrom = evtMessage.MailItem.Message.From.SmtpAddress;
+                            int P2FromAtIndex = P2MsgFrom.IndexOf("@");
+                            int P2FromRecLength = P2MsgFrom.Length;
+                            string P2FromLocal = P2MsgFrom.Substring(0, P2FromAtIndex);
+                            string P2FromDomain = P2MsgFrom.Substring(P2FromAtIndex + 1, P2FromRecLength - P2FromAtIndex - 1);
+                            string P2FromNewDomain = string.Empty;
+
+                            EventLog.AppendLogEntry(String.Format("Evaluating P2 FROM: {0}", P2MsgFrom));
+
+                            if (SenderRewriteMap.ContainsKey(P2FromDomain))
+                            {
+                                P2FromNewDomain = SenderRewriteMap[P2FromDomain];
+                                evtMessage.MailItem.Message.From.SmtpAddress = P2FromLocal + "@" + P2FromNewDomain;
+                                EventLog.AppendLogEntry(String.Format("P2 FROM {0}@{1} rewritten to {2}@{3}", P2FromLocal, P2FromDomain, P2FromLocal, P2FromNewDomain));
+                            }
+                        }
+                        else
+                        {
+                            EventLog.AppendLogEntry("P2 FROM is null or empty, skipping P2 FROM rewrite");
+                            warningOccurred = true;
                         }
 
                         // Rewriting P2 sender (SENDER:)
-                        string P2MsgSender = evtMessage.MailItem.Message.Sender.SmtpAddress;
-                        int P2SenderAtIndex = P2MsgSender.IndexOf("@");
-                        int P2SenderRecLength = P2MsgSender.Length;
-                        string P2SenderLocal = P2MsgSender.Substring(0, P2SenderAtIndex);
-                        string P2SenderDomain = P2MsgSender.Substring(P2SenderAtIndex + 1, P2SenderRecLength - P2SenderAtIndex - 1);
-                        string P2SenderNewDomain = string.Empty;
-
-                        EventLog.AppendLogEntry(String.Format("Evaluating P2 SENDER: {0}", P2MsgFrom));
-
-                        if (SenderRewriteMap.ContainsKey(P2SenderDomain))
+                        if (evtMessage.MailItem.Message.Sender != null && evtMessage.MailItem.Message.Sender.SmtpAddress != null)
                         {
-                            P2SenderNewDomain = SenderRewriteMap[P2SenderDomain];
-                            evtMessage.MailItem.Message.Sender.SmtpAddress = P2SenderLocal + "@" + P2SenderNewDomain;
-                            EventLog.AppendLogEntry(String.Format("P2 SENDER {0}@{1} rewritten to {2}@{3}", P2SenderLocal, P2SenderDomain, P2SenderLocal, P2SenderNewDomain));
+                            string P2MsgSender = evtMessage.MailItem.Message.Sender.SmtpAddress;
+                            int P2SenderAtIndex = P2MsgSender.IndexOf("@");
+                            int P2SenderRecLength = P2MsgSender.Length;
+                            string P2SenderLocal = P2MsgSender.Substring(0, P2SenderAtIndex);
+                            string P2SenderDomain = P2MsgSender.Substring(P2SenderAtIndex + 1, P2SenderRecLength - P2SenderAtIndex - 1);
+                            string P2SenderNewDomain = string.Empty;
+
+                            EventLog.AppendLogEntry(String.Format("Evaluating P2 SENDER: {0}", P2MsgSender));
+
+                            if (SenderRewriteMap.ContainsKey(P2SenderDomain))
+                            {
+                                P2SenderNewDomain = SenderRewriteMap[P2SenderDomain];
+                                evtMessage.MailItem.Message.Sender.SmtpAddress = P2SenderLocal + "@" + P2SenderNewDomain;
+                                EventLog.AppendLogEntry(String.Format("P2 SENDER {0}@{1} rewritten to {2}@{3}", P2SenderLocal, P2SenderDomain, P2SenderLocal, P2SenderNewDomain));
+                            }
+                        }
+                        else
+                        {
+                            EventLog.AppendLogEntry("P2 SENDER is null or empty, skipping P2 SENDER rewrite");
+                            warningOccurred = true;
                         }
 
                     }
