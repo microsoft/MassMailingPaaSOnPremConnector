@@ -53,31 +53,33 @@ namespace MassMailingPaaSOnPremConnector
         {
             base.OnResolvedMessage += new ResolvedMessageEventHandler(RerouteExtrernalBasedOnRegistryExclusions);
 
-            RegistryKey registryPath = Registry.CurrentUser.OpenSubKey(RegistryHive, RegistryKeyPermissionCheck.ReadSubTree, System.Security.AccessControl.RegistryRights.ReadKey);
-            if (registryPath != null)
+            using (RegistryKey registryPath = Registry.CurrentUser.OpenSubKey(RegistryHive, RegistryKeyPermissionCheck.ReadSubTree, System.Security.AccessControl.RegistryRights.ReadKey))
             {
-                string registryKeyValue = null;
-                bool valueConversionResult = false;
-
-                registryKeyValue = registryPath.GetValue(RegistryKeyDebugEnabled, Boolean.FalseString).ToString();
-                valueConversionResult = Boolean.TryParse(registryKeyValue, out DebugEnabled);
-
-                string[] retrievedDomains = (string[])registryPath.GetValue(RegistryKeyExemptedRecipientDomains);
-                if (retrievedDomains != null && retrievedDomains.Length > 0)
+                if (registryPath != null)
                 {
-                    foreach (string domain in retrievedDomains)
-                        if (!ExemptedRecipientDomains.Contains(domain, StringComparer.OrdinalIgnoreCase))
-                            ExemptedRecipientDomains.Add(domain);
-                    ExemptedRecipientDomains.Sort();
-                }
+                    string registryKeyValue = null;
+                    bool valueConversionResult = false;
 
-                string[] retrievedRecipients = (string[])registryPath.GetValue(RegistryKeyExemptedRecipientAddresses);
-                if (retrievedRecipients != null && retrievedRecipients.Length > 0)
-                {
-                    foreach (string recipient in retrievedRecipients)
-                        if (!ExemptedRecipientAddresses.Contains(recipient, StringComparer.OrdinalIgnoreCase))
-                            ExemptedRecipientAddresses.Add(recipient);
-                    ExemptedRecipientAddresses.Sort();
+                    registryKeyValue = registryPath.GetValue(RegistryKeyDebugEnabled, Boolean.FalseString).ToString();
+                    valueConversionResult = Boolean.TryParse(registryKeyValue, out DebugEnabled);
+
+                    string[] retrievedDomains = (string[])registryPath.GetValue(RegistryKeyExemptedRecipientDomains);
+                    if (retrievedDomains != null && retrievedDomains.Length > 0)
+                    {
+                        foreach (string domain in retrievedDomains)
+                            if (!ExemptedRecipientDomains.Contains(domain, StringComparer.OrdinalIgnoreCase))
+                                ExemptedRecipientDomains.Add(domain);
+                        ExemptedRecipientDomains.Sort();
+                    }
+
+                    string[] retrievedRecipients = (string[])registryPath.GetValue(RegistryKeyExemptedRecipientAddresses);
+                    if (retrievedRecipients != null && retrievedRecipients.Length > 0)
+                    {
+                        foreach (string recipient in retrievedRecipients)
+                            if (!ExemptedRecipientAddresses.Contains(recipient, StringComparer.OrdinalIgnoreCase))
+                                ExemptedRecipientAddresses.Add(recipient);
+                        ExemptedRecipientAddresses.Sort();
+                    }
                 }
             }
 

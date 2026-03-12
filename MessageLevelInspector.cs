@@ -40,14 +40,16 @@ namespace MassMailingPaaSOnPremConnector
             base.OnSubmittedMessage += new SubmittedMessageEventHandler(MessageLevelInspectorPreProcess);
             base.OnCategorizedMessage += new CategorizedMessageEventHandler(MessageLevelInspectorPostProcess);
 
-            RegistryKey registryPath = Registry.CurrentUser.OpenSubKey(RegistryHive, RegistryKeyPermissionCheck.ReadSubTree, System.Security.AccessControl.RegistryRights.ReadKey);
-            if (registryPath != null)
+            using (RegistryKey registryPath = Registry.CurrentUser.OpenSubKey(RegistryHive, RegistryKeyPermissionCheck.ReadSubTree, System.Security.AccessControl.RegistryRights.ReadKey))
             {
-                string registryKeyValue = null;
-                bool valueConversionResult = false;
+                if (registryPath != null)
+                {
+                    string registryKeyValue = null;
+                    bool valueConversionResult = false;
 
-                registryKeyValue = registryPath.GetValue(RegistryKeyDebugEnabled, Boolean.FalseString).ToString();
-                valueConversionResult = Boolean.TryParse(registryKeyValue, out DebugEnabled);
+                    registryKeyValue = registryPath.GetValue(RegistryKeyDebugEnabled, Boolean.FalseString).ToString();
+                    valueConversionResult = Boolean.TryParse(registryKeyValue, out DebugEnabled);
+                }
             }
         }
 
