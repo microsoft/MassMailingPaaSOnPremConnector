@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("MassMailingPaaSOnPremConnector")]
-[assembly: AssemblyDescription("Provide the features for the On-Premises Connector required by Mass-Mailing PaaS to integrate incompatible devices such as those devices/apps unalbe to authenticate or using unsupported authententication mechanisms (IP-based, Cerntificate-Based, WindowsIntegrated, etc.)")]
+[assembly: AssemblyDescription("Provides Conditional Routing in Exchange Server, address rewriting capabilities and debug features. Can be used to conditionally steer traffic in multiple scenarios.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Microsoft Corporation")]
 [assembly: AssemblyProduct("MassMailingPaaSOnPremConnector")]
@@ -30,5 +30,5 @@ using System.Runtime.InteropServices;
 //      Build Number
 //      Revision
 //
-[assembly: AssemblyVersion("1.0.7")]
-[assembly: AssemblyFileVersion("1.0.7")]
+[assembly: AssemblyVersion("1.0.8")]
+[assembly: AssemblyFileVersion("1.0.8")]
