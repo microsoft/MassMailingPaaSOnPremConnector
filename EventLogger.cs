@@ -124,7 +124,13 @@ namespace MassMailingPaaSOnPremConnector
 
         private void WriteEventLogOnExit()
         {
-            if (!String.IsNullOrEmpty(EventLogMessage.ToString()))
+            // In case there are pending log messages that haven't been written yet, attempt to write them on Agent exit.
+            if (EventLogMessage == null)
+            {
+                return;
+            }
+
+            if (EventLogMessage.Length > 0 && !String.IsNullOrEmpty(EventLogMessage.ToString()))
             {
                 EventLogMessage.AppendLine("Writing Event on Agent exit");
                 EventLog.WriteEntry(Source, EventLogMessage.ToString(), EventLogEntryType.Information);

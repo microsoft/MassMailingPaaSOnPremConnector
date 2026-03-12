@@ -69,13 +69,17 @@ namespace MassMailingPaaSOnPremConnector
             {
                 _logStream.Flush();
                 _logStream.Dispose();
+                _logStream = null;
             }
         }
 
         public void WriteToText(string message)
         {
-            _logStream.WriteLine(String.Format("{0:yyyy-MM-dd HH:mm:ss} | {1}", DateTime.Now, message));
-            _logStream.Flush();
+            if (_logStream != null)
+            {
+                _logStream.WriteLine(String.Format("{0:yyyy-MM-dd HH:mm:ss} | {1}", DateTime.Now, message));
+                _logStream.Flush();
+            }
         }
 
     }
