@@ -63,7 +63,7 @@ namespace MassMailingPaaSOnPremConnector
                     registryKeyValue = registryPath.GetValue(RegistryKeyDebugEnabled, Boolean.FalseString).ToString();
                     valueConversionResult = Boolean.TryParse(registryKeyValue, out DebugEnabled);
 
-                    string[] retrievedDomains = (string[])registryPath.GetValue(RegistryKeyExemptedRecipientDomains);
+                    string[] retrievedDomains = registryPath.GetValue(RegistryKeyExemptedRecipientDomains) as string[];
                     if (retrievedDomains != null && retrievedDomains.Length > 0)
                     {
                         foreach (string domain in retrievedDomains)
@@ -72,7 +72,7 @@ namespace MassMailingPaaSOnPremConnector
                         ExemptedRecipientDomains.Sort();
                     }
 
-                    string[] retrievedRecipients = (string[])registryPath.GetValue(RegistryKeyExemptedRecipientAddresses);
+                    string[] retrievedRecipients = registryPath.GetValue(RegistryKeyExemptedRecipientAddresses) as string[];
                     if (retrievedRecipients != null && retrievedRecipients.Length > 0)
                     {
                         foreach (string recipient in retrievedRecipients)
