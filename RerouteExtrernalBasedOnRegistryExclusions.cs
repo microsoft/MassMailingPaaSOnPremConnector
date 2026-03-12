@@ -7,6 +7,7 @@ using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace MassMailingPaaSOnPremConnector
 {
@@ -65,8 +66,8 @@ namespace MassMailingPaaSOnPremConnector
                 if (retrievedDomains != null && retrievedDomains.Length > 0)
                 {
                     foreach (string domain in retrievedDomains)
-                        if (!ExemptedRecipientDomains.Contains(domain.ToLower()))
-                            ExemptedRecipientDomains.Add(domain.ToLower());
+                        if (!ExemptedRecipientDomains.Contains(domain, StringComparer.OrdinalIgnoreCase))
+                            ExemptedRecipientDomains.Add(domain);
                     ExemptedRecipientDomains.Sort();
                 }
 
@@ -74,8 +75,8 @@ namespace MassMailingPaaSOnPremConnector
                 if (retrievedRecipients != null && retrievedRecipients.Length > 0)
                 {
                     foreach (string recipient in retrievedRecipients)
-                        if (!ExemptedRecipientAddresses.Contains(recipient.ToLower()))
-                            ExemptedRecipientAddresses.Add(recipient.ToLower());
+                        if (!ExemptedRecipientAddresses.Contains(recipient, StringComparer.OrdinalIgnoreCase))
+                            ExemptedRecipientAddresses.Add(recipient);
                     ExemptedRecipientAddresses.Sort();
                 }
             }
@@ -89,7 +90,7 @@ namespace MassMailingPaaSOnPremConnector
                 bool warningOccurred = false;  // controls whether there event log entry is a warning or informational; if anything is out of order log a warning instead of an information log entry. Warnings and Errors are logged regardless of the DebugEnabled setting.
                 bool hasProcessedMessage = false; // will be set to true when the message is processed (header present) to only write debug logs when the agent processes the message, and avoiding to log information for messages that has no control header set
                 string messageId = evtMessage.MailItem.Message.MessageId.ToString();
-                string sender = evtMessage.MailItem.FromAddress.ToString().ToLower().Trim();
+                string sender = evtMessage.MailItem.FromAddress.ToString().Trim();
                 string subject = evtMessage.MailItem.Message.Subject.Trim();
                 HeaderList headers = evtMessage.MailItem.Message.MimeDocument.RootPart.Headers;
                 Stopwatch stopwatch = Stopwatch.StartNew();
@@ -111,11 +112,11 @@ namespace MassMailingPaaSOnPremConnector
 
                         foreach (EnvelopeRecipient recipient in evtMessage.MailItem.Recipients)
                         {
-                            if (ExemptedRecipientDomains.Contains(recipient.Address.DomainPart.ToLower()))
+                            if (ExemptedRecipientDomains.Contains(recipient.Address.DomainPart, StringComparer.OrdinalIgnoreCase))
                             {
                                 EventLog.AppendLogEntry(String.Format("Recipient {0} not overridden as the recipient domain {1} is present in the registry key {2}", recipient.Address.ToString(), recipient.Address.DomainPart.ToString(), RegistryKeyExemptedRecipientDomains));
                             }
-                            else if (ExemptedRecipientAddresses.Contains(recipient.Address.ToString().ToLower()))
+                            else if (ExemptedRecipientAddresses.Contains(recipient.Address.ToString(), StringComparer.OrdinalIgnoreCase))
                             {
                                 EventLog.AppendLogEntry(String.Format("Recipient {0} not overridden as the recipient address {1} is present in the registry key {2}", recipient.Address.ToString(), recipient.Address.ToString(), RegistryKeyExemptedRecipientAddresses));
                             }
