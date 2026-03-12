@@ -35,7 +35,7 @@ namespace MassMailingPaaSOnPremConnector
                 try
                 {
                     Source = "MassMailingPaaSOnPremConnector";
-                    if (!!EventLog.SourceExists(Source))
+                    if (!EventLog.SourceExists(Source))
                     {
                         EventLog.CreateEventSource(Source, "Application");
                     }
