@@ -49,7 +49,7 @@ namespace MassMailingPaaSOnPremConnector
         {
             base.OnResolvedMessage += new ResolvedMessageEventHandler(RewriteSenderDomain);
 
-            RegistryKey registryPath = Registry.CurrentUser.OpenSubKey(RegistryHive, RegistryKeyPermissionCheck.ReadWriteSubTree, System.Security.AccessControl.RegistryRights.FullControl);
+            RegistryKey registryPath = Registry.CurrentUser.OpenSubKey(RegistryHive, RegistryKeyPermissionCheck.ReadSubTree, System.Security.AccessControl.RegistryRights.ReadPermissions);
             if (registryPath != null)
             {
                 string registryKeyValue = null;

@@ -40,7 +40,7 @@ namespace MassMailingPaaSOnPremConnector
             base.OnSubmittedMessage += new SubmittedMessageEventHandler(MessageLevelInspectorPreProcess);
             base.OnCategorizedMessage += new CategorizedMessageEventHandler(MessageLevelInspectorPostProcess);
 
-            RegistryKey registryPath = Registry.CurrentUser.OpenSubKey(RegistryHive, RegistryKeyPermissionCheck.ReadWriteSubTree, System.Security.AccessControl.RegistryRights.FullControl);
+            RegistryKey registryPath = Registry.CurrentUser.OpenSubKey(RegistryHive, RegistryKeyPermissionCheck.ReadSubTree, System.Security.AccessControl.RegistryRights.ReadKey);
             if (registryPath != null)
             {
                 string registryKeyValue = null;
@@ -118,6 +118,7 @@ namespace MassMailingPaaSOnPremConnector
                     Stream attachmentStream = null;
                     attachment.TryGetContentReadStream(out attachmentStream);
                     EventLog.AppendLogEntry(String.Format("File Name: {0}; Attachment Type: {1}; File Size: {2} bytes", attachment.FileName, attachment.AttachmentType, attachmentStream == null ? "Null" : attachmentStream.Length.ToString()));
+                    attachmentStream.Dispose();
                 }
             }
             else

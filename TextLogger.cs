@@ -30,6 +30,8 @@ namespace MassMailingPaaSOnPremConnector
             }
             catch (Exception)
             {
+                // Swallow exceptions and continue without logging if the log stream cannot be created or accessed.
+                // This is to avoid any disruption to the main functionality of the agent in case of issues with the log file (e.g. permission issues, file lock by other process, etc.).
             }
         }
 
@@ -47,6 +49,8 @@ namespace MassMailingPaaSOnPremConnector
             }
             catch (Exception)
             {
+                // Swallow exceptions and continue without logging if the log stream cannot be created or accessed.
+                // This is to avoid any disruption to the main functionality of the agent in case of issues with the log file (e.g. permission issues, file lock by other process, etc.).
             }
         }
 
