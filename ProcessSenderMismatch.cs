@@ -101,15 +101,31 @@ namespace MassMailingPaaSOnPremConnector
                         switch (MassMailingPaaSOnPremConnectorP1P2MismatchActionValue.ToUpper())
                         {
                             case "USEP1":
-                                evtMessage.MailItem.Message.Sender.SmtpAddress = P1Sender;
-                                evtMessage.MailItem.Message.From.SmtpAddress = P1Sender;
-                                EventLog.AppendLogEntry(String.Format("P2 Sender has been set to: {0}", P1Sender));
-                                messageProcessed = true;
+                                if (evtMessage.MailItem.Message.Sender != null && evtMessage.MailItem.Message.From != null)
+                                {
+                                    evtMessage.MailItem.Message.Sender.SmtpAddress = P1Sender;
+                                    evtMessage.MailItem.Message.From.SmtpAddress = P1Sender;
+                                    EventLog.AppendLogEntry(String.Format("P2 Sender has been set to: {0}", P1Sender));
+                                    messageProcessed = true;
+                                }
+                                else
+                                {
+                                    EventLog.AppendLogEntry("Unable to apply UseP1: P2 Sender or From object is null");
+                                    warningOccurred = true;
+                                }
                                 break;
                             case "USEP2":
-                                evtMessage.MailItem.FromAddress = new RoutingAddress(P2Sender);
-                                EventLog.AppendLogEntry(String.Format("P1 Sender has been set to: {0}", P2Sender));
-                                messageProcessed = true;
+                                if (!String.IsNullOrEmpty(P2Sender))
+                                {
+                                    evtMessage.MailItem.FromAddress = new RoutingAddress(P2Sender);
+                                    EventLog.AppendLogEntry(String.Format("P1 Sender has been set to: {0}", P2Sender));
+                                    messageProcessed = true;
+                                }
+                                else
+                                {
+                                    EventLog.AppendLogEntry("Unable to apply UseP2: P2 Sender address is null or empty");
+                                    warningOccurred = true;
+                                }
                                 break;
                             case "NONE":
                                 EventLog.AppendLogEntry(String.Format("No action has been taken as the header is set to {0}", MassMailingPaaSOnPremConnectorP1P2MismatchActionValue));
