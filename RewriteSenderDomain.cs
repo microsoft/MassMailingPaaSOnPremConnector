@@ -85,10 +85,9 @@ namespace MassMailingPaaSOnPremConnector
 
                     if (!String.IsNullOrEmpty(MassMailingPaaSOnPremConnectorTargetValue))
                     {
-                        SenderRewriteMap = MassMailingPaaSOnPremConnectorTargetValue.ToLower()
-                                                                                       .Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
-                                                                                       .Select(part => part.Split('='))
-                                                                                       .ToDictionary(split => split[0].Trim(), split => split[1].Trim());
+                        SenderRewriteMap = MassMailingPaaSOnPremConnectorTargetValue.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
+                                                                                    .Select(part => part.Split('='))
+                                                                                    .ToDictionary(split => split[0].Trim(), split => split[1].Trim(), StringComparer.OrdinalIgnoreCase);
 
                         EventLog.AppendLogEntry(String.Format("Sender domain rewite map start"));
                         foreach (var MapEntry in SenderRewriteMap)
@@ -99,8 +98,8 @@ namespace MassMailingPaaSOnPremConnector
 
                         // Rewriting P1 sender (MAIL FROM:)
                         RoutingAddress P1MsgSender = evtMessage.MailItem.FromAddress;
-                        string P1FromLocal = P1MsgSender.LocalPart.ToLower();
-                        string P1FromDomain = P1MsgSender.DomainPart.ToLower();
+                        string P1FromLocal = P1MsgSender.LocalPart;
+                        string P1FromDomain = P1MsgSender.DomainPart;
                         string P1FromNewDomain = string.Empty;
 
                         EventLog.AppendLogEntry(String.Format("Evaluating P1 MAIL FROM: {0}", P1MsgSender.ToString()));
