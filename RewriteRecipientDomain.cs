@@ -86,10 +86,9 @@ namespace MassMailingPaaSOnPremConnector
 
                     if (!String.IsNullOrEmpty(MassMailingPaaSOnPremConnectorTargetValue))
                     {
-                        RecipientRewriteMap = MassMailingPaaSOnPremConnectorTargetValue.ToLower()
-                                                                                       .Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
+                        RecipientRewriteMap = MassMailingPaaSOnPremConnectorTargetValue.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
                                                                                        .Select(part => part.Split('='))
-                                                                                       .ToDictionary(split => split[0].Trim(), split => split[1].Trim());
+                                                                                       .ToDictionary(split => split[0].Trim(), split => split[1].Trim(), StringComparer.OrdinalIgnoreCase);
 
                         EventLog.AppendLogEntry(String.Format("Recipient domain rewite map start"));
                         foreach (var MapEntry in RecipientRewriteMap)
@@ -102,8 +101,8 @@ namespace MassMailingPaaSOnPremConnector
                         for (int i = 0; i < evtMessage.MailItem.Recipients.Count; i++)
                         {
                             RoutingAddress msgRecipient = evtMessage.MailItem.Recipients[i].Address;
-                            string rcptLocal = msgRecipient.LocalPart.ToLower();
-                            string rcptDomain = msgRecipient.DomainPart.ToLower();
+                            string rcptLocal = msgRecipient.LocalPart;
+                            string rcptDomain = msgRecipient.DomainPart;
                             string rcptNewDomain = string.Empty;
 
                             EventLog.AppendLogEntry(String.Format("Evaluating P1 recipient: {0}", msgRecipient.ToString()));
