@@ -118,7 +118,10 @@ namespace MassMailingPaaSOnPremConnector
                     Stream attachmentStream = null;
                     attachment.TryGetContentReadStream(out attachmentStream);
                     EventLog.AppendLogEntry(String.Format("File Name: {0}; Attachment Type: {1}; File Size: {2} bytes", attachment.FileName, attachment.AttachmentType, attachmentStream == null ? "Null" : attachmentStream.Length.ToString()));
-                    attachmentStream.Dispose();
+                    if (attachmentStream != null)
+                    {
+                        attachmentStream.Dispose();
+                    }
                 }
             }
             else
@@ -134,7 +137,7 @@ namespace MassMailingPaaSOnPremConnector
                 warningOccurred = true;
             }
 
-            if (!String.Equals(evtMessage.MailItem.Message.Sender.SmtpAddress.ToString().Trim() != evtMessage.MailItem.Message.From.SmtpAddress.ToString().Trim(), StringComparison.OrdinalIgnoreCase))
+            if (!String.Equals(evtMessage.MailItem.Message.Sender.SmtpAddress.ToString().Trim(), evtMessage.MailItem.Message.From.SmtpAddress.ToString().Trim(), StringComparison.OrdinalIgnoreCase))
             {
                 EventLog.AppendLogEntry("==================== IMPORTANT ====================");
                 EventLog.AppendLogEntry("Note that the P2 Sender and the P2 From mismatch. This can be source of problems");

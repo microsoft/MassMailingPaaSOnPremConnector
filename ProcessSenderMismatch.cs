@@ -96,7 +96,7 @@ namespace MassMailingPaaSOnPremConnector
                         EventLog.AppendLogEntry(String.Format("P1 Sender is set to: {0}", P1Sender));
                         EventLog.AppendLogEntry(String.Format("P2 Sender is set to: {0}", P2Sender));
 
-                        switch (MassMailingPaaSOnPremConnectorP1P2MismatchActionValue)
+                        switch (MassMailingPaaSOnPremConnectorP1P2MismatchActionValue.ToUpper())
                         {
                             case "USEP1":
                                 evtMessage.MailItem.Message.Sender.SmtpAddress = P1Sender;
