@@ -73,7 +73,7 @@ namespace MassMailingPaaSOnPremConnector
                 string sender = evtMessage.MailItem.FromAddress.ToString().Trim();
                 string subject = evtMessage.MailItem.Message.Subject.Trim();
                 string P1Sender = evtMessage.MailItem.FromAddress.ToString();
-                string P2Sender = evtMessage.MailItem.Message.Sender.SmtpAddress;
+                string P2Sender = evtMessage.MailItem.Message.Sender?.SmtpAddress ?? string.Empty;
                 HeaderList headers = evtMessage.MailItem.Message.MimeDocument.RootPart.Headers;
                 Stopwatch stopwatch = Stopwatch.StartNew();
 
