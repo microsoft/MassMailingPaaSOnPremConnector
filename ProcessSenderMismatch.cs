@@ -83,7 +83,7 @@ namespace MassMailingPaaSOnPremConnector
                 {
                     hasProcessedMessage = true; 
                     EventLog.AppendLogEntry(String.Format("Evaluating P1/P2 Sender Mismatch as the control header {0} is present", MassMailingPaaSOnPremConnectorP1P2MismatchActionName));
-                    MassMailingPaaSOnPremConnectorP1P2MismatchActionValue = MassMailingPaaSOnPremConnectorP1P2MismatchAction.Value.Trim().ToUpper();
+                    MassMailingPaaSOnPremConnectorP1P2MismatchActionValue = MassMailingPaaSOnPremConnectorP1P2MismatchAction.Value.Trim();
 
                     if (!String.IsNullOrEmpty(MassMailingPaaSOnPremConnectorP1P2MismatchActionValue) &&
                         (String.Equals(MassMailingPaaSOnPremConnectorP1P2MismatchActionValue, "UseP1", StringComparison.OrdinalIgnoreCase) ||
@@ -144,7 +144,7 @@ namespace MassMailingPaaSOnPremConnector
                 {
                     hasProcessedMessage = true; 
                     EventLog.AppendLogEntry(String.Format("Overriding P1 Sender as the control header {0} is present", MassMailingPaaSOnPremConnectorForceP1Name));
-                    MassMailingPaaSOnPremConnectorForceP1Value = MassMailingPaaSOnPremConnectorForceP1.Value.Trim().ToUpper();
+                    MassMailingPaaSOnPremConnectorForceP1Value = MassMailingPaaSOnPremConnectorForceP1.Value.Trim();
 
                     RoutingAddress newP1 = new RoutingAddress(MassMailingPaaSOnPremConnectorForceP1Value);
                     EventLog.AppendLogEntry(String.Format("The new P1 Sender will be forced is {0}", newP1.ToString()));
